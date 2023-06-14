@@ -7,8 +7,12 @@ Created on Wed May 31 08:19:16 2023
 import pandas as pd
 import argparse
 import yfinance as yf
+import matplotlib.pyplot as plt
+
 
 a = __import__("DEF-MFS-MVP-Storage")
+b = __import__("DEF-MFS-MVP-StatisticalAnalysis")
+c = __import__("DEF-MFS-MVP-Visualization")
  
 
 #Class Definition for Specific Stock company
@@ -38,8 +42,39 @@ def store_data(fileName,ticker_symbol):
         print("File Upload Sucessfull!!")
     else:
         print("File Upload Failed!!")
- 
+
+#Function to get stats
+def get_statistics():
+    df = pd.read_excel("C:/Users/aakas/Documents/Co-op/Week 5/Ford.xlsx")
+    cols = df.columns
+    l = dict.fromkeys(cols[2:])
+    for i in cols[2:]:
+        s = b.stats()
+        l[i] = s.cal_stats(df[i])
     
+    stats_df = pd.DataFrame.from_dict(l,orient='index', columns=["Min","Max","Range","Mean","Median","Std","Var"])
+    print(stats_df)
+
+#Function to get Plots        
+def get_viz():
+    df_ford = pd.read_excel("C:/Users/aakas/Documents/Co-op/Week 5/Ford.xlsx")
+    df_tsla = pd.read_excel("C:/Users/aakas/Documents/Co-op/Week 5/TSLA.xlsx")
+    
+    cols = df_ford.columns
+    date = df_ford['Date']
+    
+    for i in cols[2:]:
+        v = c.viz()
+        
+        print("Plot for the columns {}".format(i))
+        a = df_ford[i]
+        b = df_tsla[i]
+        
+        v.line_chart(a,b,date)
+    
+
+
+       
 #Main Function
 def main():
     print("Usage: DEF-MFS-MVP.py -t ticker_sysmbol -s start_date -e end_date") #Printing the Usage of the file 
@@ -65,6 +100,12 @@ def main():
     
     # Uploading data to S3
     store_data(fileName,stock_data.ticker_symbol)
+    
+    # Function to get statistical values
+    get_statistics()
+    
+    #Function to get Plots
+    get_viz()
 
 #Start
 
