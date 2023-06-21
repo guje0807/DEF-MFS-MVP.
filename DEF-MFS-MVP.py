@@ -8,11 +8,13 @@ import pandas as pd
 import argparse
 import yfinance as yf
 import matplotlib.pyplot as plt
+import glob
 
 
 a = __import__("DEF-MFS-MVP-Storage")
 b = __import__("DEF-MFS-MVP-StatisticalAnalysis")
 c = __import__("DEF-MFS-MVP-Visualization")
+d = __import__("DEF-MFS-MVP-InteractiveVisualization")
  
 
 #Class Definition for Specific Stock company
@@ -32,6 +34,28 @@ class stock:
         df.reset_index(inplace=True)
         print("Returning Stock Data")
         return df
+
+
+def download_data():
+    argParser = argparse.ArgumentParser() 
+    argParser.add_argument("-t", "--ticker_symbol", help="Ticker Symbol") # Adding Ticker Symbol Argument 
+    argParser.add_argument("-s", "--start_date", help="Start Date") # Adding Start Date Argument
+    argParser.add_argument("-e", "--end_date", help="End Date") # Adding End Date Argument
+    
+    args = argParser.parse_args() # Loading the Arguments to a variable
+    
+    print("Passed Argumnets are:", args) # Printing the Arguments 
+    
+    stock_data = stock(args.ticker_symbol, args.start_date, args.end_date) #Declaring the Object with ticker symbol,start date and end date.
+    
+    df = stock_data.download_stock_info() # Calling the Class member function
+    
+    fileName = f"{stock_data.ticker_symbol}.xlsx"
+    
+    df.to_excel(f"{stock_data.ticker_symbol}.xlsx") #Downloading the stock data to excel file
+    
+    #print(df.head(10)) # Printing the top 10 rows of the stock data.
+
 
 #Function to store data to S3.
 def store_data(fileName,ticker_symbol):
@@ -71,41 +95,35 @@ def get_viz():
         b = df_tsla[i]
         
         v.line_chart(a,b,date)
-    
+
+def interactive_visualizations():
+    print("Inside Interactive viz")
+    df_ford = pd.read_excel("C:/Users/aakas/Documents/Co-op/Week 5/Ford.xlsx")
+    df_tsla = pd.read_excel("C:/Users/aakas/Documents/Co-op/Week 5/TSLA.xlsx")
+        
+    v = d.interactive_viz()
+    v.generate_dashboard(df_ford,df_tsla)
 
 
        
 #Main Function
 def main():
-    print("Usage: DEF-MFS-MVP.py -t ticker_sysmbol -s start_date -e end_date") #Printing the Usage of the file 
+    #print("Usage: DEF-MFS-MVP.py -t ticker_sysmbol -s start_date -e end_date") #Printing the Usage of the file 
     
-    argParser = argparse.ArgumentParser() 
-    argParser.add_argument("-t", "--ticker_symbol", help="Ticker Symbol") # Adding Ticker Symbol Argument 
-    argParser.add_argument("-s", "--start_date", help="Start Date") # Adding Start Date Argument
-    argParser.add_argument("-e", "--end_date", help="End Date") # Adding End Date Argument
-    
-    args = argParser.parse_args() # Loading the Arguments to a variable
-    
-    print("Passed Argumnets are:", args) # Printing the Arguments 
-    
-    stock_data = stock(args.ticker_symbol, args.start_date, args.end_date) #Declaring the Object with ticker symbol,start date and end date.
-    
-    df = stock_data.download_stock_info() # Calling the Class member function
-    
-    fileName = f"{stock_data.ticker_symbol}.xlsx"
-    
-    df.to_excel(f"{stock_data.ticker_symbol}.xlsx") #Downloading the stock data to excel file
-    
-    #print(df.head(10)) # Printing the top 10 rows of the stock data.
+    #download Data
+    #download_data()
     
     # Uploading data to S3
-    store_data(fileName,stock_data.ticker_symbol)
+    #store_data(fileName,stock_data.ticker_symbol)
     
     # Function to get statistical values
-    get_statistics()
+    #get_statistics()
     
     #Function to get Plots
-    get_viz()
+    #get_viz()
+    
+    #Function to get run Plotly dashboard
+    interactive_visualizations()
 
 #Start
 
