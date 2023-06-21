@@ -13,5 +13,3 @@ class viz:
         plt.plot(d,b,label='TSLA')
         plt.legend()
         plt.show()
-        #a.plot.line(label = "Ford")
-        #b.plot.line(label = "Telsa")
