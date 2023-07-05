@@ -15,7 +15,7 @@ a = __import__("DEF-MFS-MVP-Storage")
 b = __import__("DEF-MFS-MVP-StatisticalAnalysis")
 c = __import__("DEF-MFS-MVP-Visualization")
 d = __import__("DEF-MFS-MVP-InteractiveVisualization")
- 
+e = __import__("DEF-MFS-MVP-Timeseries-Analysis")
 
 #Class Definition for Specific Stock company
 class stock:
@@ -104,6 +104,13 @@ def interactive_visualizations():
     v = d.interactive_viz()
     v.generate_dashboard(df_ford,df_tsla)
 
+def modelling():
+    print("Inside Modelling")
+    
+    m = e.TimeSeriesAnalysis_Telsa()
+    m.AutoCorrelationPlot(lag = 3)
+    m.StockPriceOverTime()
+    m.model()
 
        
 #Main Function
@@ -123,7 +130,10 @@ def main():
     #get_viz()
     
     #Function to get run Plotly dashboard
-    interactive_visualizations()
+    #interactive_visualizations()
+    
+    #Function to implement ARIMA model on Tesla Stock
+    modelling()
 
 #Start
 
