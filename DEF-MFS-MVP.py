@@ -7,8 +7,7 @@ Created on Wed May 31 08:19:16 2023
 import pandas as pd
 import argparse
 import yfinance as yf
-import matplotlib.pyplot as plt
-import glob
+
 
 
 a = __import__("DEF-MFS-MVP-Storage")
@@ -16,6 +15,7 @@ b = __import__("DEF-MFS-MVP-StatisticalAnalysis")
 c = __import__("DEF-MFS-MVP-Visualization")
 d = __import__("DEF-MFS-MVP-InteractiveVisualization")
 e = __import__("DEF-MFS-MVP-Timeseries-Analysis")
+f = __import__("DEF-MFS-MVP-Timeseries-Forcasting")
 
 #Class Definition for Specific Stock company
 class stock:
@@ -55,6 +55,8 @@ def download_data():
     df.to_excel(f"{stock_data.ticker_symbol}.xlsx") #Downloading the stock data to excel file
     
     #print(df.head(10)) # Printing the top 10 rows of the stock data.
+    
+    return fileName,stock_data
 
 
 #Function to store data to S3.
@@ -107,30 +109,40 @@ def interactive_visualizations():
 def modelling():
     print("Inside Modelling")
     
+    """print("Tesla Modelling")
     m = e.TimeSeriesAnalysis_Telsa()
     m.AutoCorrelationPlot(lag = 3)
     m.StockPriceOverTime()
     m.model()
+    m.get_prediction_dashboard()
+    
+    print("Ford Modelling")
+    n = e.TimeSeriesAnalysis_Ford()
+    n.results()"""
+    
+    print("Prophet Modelling")
+    p = f.Timeseries_Forecasting()
+    p.implement_model()
 
        
 #Main Function
 def main():
-    #print("Usage: DEF-MFS-MVP.py -t ticker_sysmbol -s start_date -e end_date") #Printing the Usage of the file 
+    print("Usage: DEF-MFS-MVP.py -t ticker_sysmbol -s start_date -e end_date") #Printing the Usage of the file 
     
     #download Data
-    #download_data()
+    fileName, stock_data= download_data()
     
-    # Uploading data to S3
-    #store_data(fileName,stock_data.ticker_symbol)
+    #Uploading data to S3
+    store_data(fileName,stock_data.ticker_symbol)
     
-    # Function to get statistical values
-    #get_statistics()
+    #Function to get statistical values
+    get_statistics()
     
     #Function to get Plots
-    #get_viz()
+    get_viz()
     
     #Function to get run Plotly dashboard
-    #interactive_visualizations()
+    interactive_visualizations()
     
     #Function to implement ARIMA model on Tesla Stock
     modelling()
