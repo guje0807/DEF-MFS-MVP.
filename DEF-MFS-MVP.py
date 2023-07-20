@@ -16,6 +16,7 @@ c = __import__("DEF-MFS-MVP-Visualization")
 d = __import__("DEF-MFS-MVP-InteractiveVisualization")
 e = __import__("DEF-MFS-MVP-Timeseries-Analysis")
 f = __import__("DEF-MFS-MVP-Timeseries-Forcasting")
+g = __import__("DEF-MFS-MVP-Demo")
 
 #Class Definition for Specific Stock company
 class stock:
@@ -118,11 +119,15 @@ def modelling():
     
     print("Ford Modelling")
     n = e.TimeSeriesAnalysis_Ford()
-    n.results()"""
+    n.results()
     
     print("Prophet Modelling")
     p = f.Timeseries_Forecasting()
-    p.implement_model()
+    p.implement_model()"""
+    
+    print("Demo")
+    demo = g.Timeseries_Demo()
+    demo.implement(demo)
 
        
 #Main Function
@@ -130,19 +135,19 @@ def main():
     print("Usage: DEF-MFS-MVP.py -t ticker_sysmbol -s start_date -e end_date") #Printing the Usage of the file 
     
     #download Data
-    fileName, stock_data= download_data()
+    #fileName, stock_data= download_data()
     
     #Uploading data to S3
-    store_data(fileName,stock_data.ticker_symbol)
+    #store_data(fileName,stock_data.ticker_symbol)
     
     #Function to get statistical values
-    get_statistics()
+    #get_statistics()
     
     #Function to get Plots
-    get_viz()
+    #get_viz()
     
     #Function to get run Plotly dashboard
-    interactive_visualizations()
+    #interactive_visualizations()
     
     #Function to implement ARIMA model on Tesla Stock
     modelling()
